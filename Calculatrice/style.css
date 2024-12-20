@@ -1,0 +1,107 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: rgb(0, 0, 0);
+    font-family: 'Roboto', sans-serif;
+    width: 100svw;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calculatrice {
+    background-color: rgb(255, 255, 255);
+    width: 30%;
+    height: 60%;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.resultat {
+    background-color: rgb(231 231 231);
+    height: 10%;
+    border-radius: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0px 10px;
+    border: 2px solid black;
+}
+
+.calcul {
+    margin: 0;
+    font-weight: 500;
+}
+
+.operation {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    height: 90%;
+    gap: 5px;
+}
+
+.operation div {
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.other {
+    background-color: rgb(255, 126, 120)
+}
+
+.method {
+    background-color: rgb(0, 117, 80);
+}
+
+.method:active {
+    background-color: rgb(0, 202, 138);
+    transition-duration: 0.1s;
+}
+
+.number:active {
+    background-color: rgb(0, 117, 80);
+    transition-duration: 0.1s;
+}
+.number {
+    background-color:  rgb(0, 202, 138);
+}
+
+.ac { grid-area: 1 / 1 / 2 / 3; }
+.del { grid-area: 1 / 3 / 2 / 4; }
+.divise { grid-area: 1 / 4 / 2 / 5; }
+.un { grid-area: 2 / 1 / 3 / 2; }
+.deux { grid-area: 2 / 2 / 3 / 3; }
+.trois { grid-area: 2 / 3 / 3 / 4; }
+.fois { grid-area: 2 / 4 / 3 / 5; }
+.qautre { grid-area: 3 / 1 / 4 / 2; }
+.cinq { grid-area: 3 / 2 / 4 / 3; }
+.six { grid-area: 3 / 3 / 4 / 4; }
+.moins { grid-area: 3 / 4 / 4 / 5; }
+.sept { grid-area: 4 / 1 / 5 / 2; }
+.huit { grid-area: 4 / 2 / 5 / 3; }
+.neuf { grid-area: 4 / 3 / 5 / 4; }
+.plus { grid-area: 4 / 4 / 5 / 5; }
+.zero { grid-area: 5 / 1 / 6 / 2; }
+.virgule { grid-area: 5 / 2 / 6 / 3; }
+.entrer { grid-area: 5 / 3 / 6 / 5; }
+
+@media (max-width: 768px) {
+  .calculatrice {
+    width: 60%;
+    font-size: 1rem;
+  }
+}
