@@ -40,6 +40,8 @@ body {
 .calcul {
     margin: 0;
     font-weight: 500;
+    font-size: 1.5rem;
+    overflow: auto;
 }
 
 .operation {
