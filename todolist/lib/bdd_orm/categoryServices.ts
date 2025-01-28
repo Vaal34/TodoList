@@ -1,0 +1,20 @@
+"use server"
+
+import prisma from "@/lib/prisma";
+
+export async function addCategory(name: string, userId: string) {
+    await prisma.category.create({
+        data: {
+            name,
+            userId,
+        },
+    });
+}
+
+export async function getCategory(userId: string){
+    return await prisma.category.findMany({
+        where: {
+            userId: userId,
+        },
+    })
+}
