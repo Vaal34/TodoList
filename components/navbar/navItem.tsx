@@ -44,20 +44,18 @@ export function NavItem({
                   .filter((task) => task.categoryId === item.id)
                   .map((task) => (
                     <SidebarMenuSubItem key={task.id}>
-                      <SidebarMenuSubButton
-                        className={`
-                          ${
-                            task.importance === "FAIBLE"
-                              ? "bg-green-100 hover:bg-green-200"
-                              : task.importance === "MOYEN"
-                                ? "bg-yellow-100 hover:bg-yellow-200"
-                                : task.importance === "FORT"
-                                  ? "bg-red-100 hover:bg-red-200"
-                                  : "bg-gray-100 hover:bg-gray-200"
-                          }
-                        `}
-                      >
+                      <SidebarMenuSubButton>
                         <span>{task.title}</span>
+                        <span className={`w-3 h-3 rounded-full ml-auto
+                          ${task.importance === "FAIBLE"
+                            ? "bg-green-500"
+                            : task.importance === "MOYEN"
+                              ? "bg-yellow-500"
+                              : task.importance === "FORT"
+                                ? "bg-red-500"
+                                : "bg-gray-100 hover:bg-gray-200"
+                          }
+                          `}></span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
