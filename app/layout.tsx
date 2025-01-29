@@ -4,6 +4,8 @@ import "./globals.css";
 import AppSidebar from "@/components/navbar/app-sidebar";
 import { Poppins } from "next/font/google";
 import SessionProviderWrapper from "@/lib/sessionProvider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/switchTheme";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,17 +23,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`h-svh ${poppins.className}`}>
-        <SessionProviderWrapper>
-          <SidebarProvider defaultOpen={true}>
-            <AppSidebar />
-            <main className="w-svw bg-zinc-200 relative">
-              <SidebarTrigger className="absolute top-4 left-4" />
-              {children}
-            </main>
-          </SidebarProvider>
-        </SessionProviderWrapper>
+        <ThemeProvider attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProviderWrapper>
+            <SidebarProvider defaultOpen={true}>
+              <AppSidebar />
+              <main className="w-svw relative">
+                <ModeToggle />
+                <SidebarTrigger className="absolute top-4 left-4" />
+                {children}
+              </main>
+            </SidebarProvider>
+          </SessionProviderWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );
