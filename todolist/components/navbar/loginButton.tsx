@@ -9,7 +9,6 @@ export default function LoginButton() {
       onClick={() => signIn()}
       title="Se connecter ou s'inscrire"
       aria-label="Se connecter ou s'inscrire"
-      className="w-full"
     >
       Login
     </Button>

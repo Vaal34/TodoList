@@ -8,13 +8,13 @@ import {
     DialogContent,
     DialogTitle,
     DialogDescription,
-} from "@radix-ui/react-dialog";
+} from "@/components/ui/dialog";
 import { FolderPlus } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { addCategory } from "@/lib/bdd_orm/categoryServices";
 
-export function AddCategory({ session, onCategoryAdded }: { session: any, onCategoryAdded: () => void }) {
+export function AddCategory({ session, onDataAdded }: { session: any, onDataAdded: () => void }) {
     const [categoryName, setCategoryName] = useState("");
     const [open, setOpen] = useState(false)
 
@@ -38,7 +38,7 @@ export function AddCategory({ session, onCategoryAdded }: { session: any, onCate
             // Fermer le modal et rafraîchir les catégories
             setCategoryName("");
             setOpen(false);
-            onCategoryAdded(); // Appelle la fonction pour rafraîchir
+            onDataAdded(); // Appelle la fonction pour rafraîchir
         } catch (error) {
             alert("Une erreur s'est produite. Veuillez réessayer.");
         }
@@ -52,20 +52,19 @@ export function AddCategory({ session, onCategoryAdded }: { session: any, onCate
                     <FolderPlus className="ml-auto" />
                 </SidebarMenuButton>
             </DialogTrigger>
-            <DialogContent className="fixed inset-0 flex flex-col items-center justify-center p-4">
-                <div className="bg-zinc-900 p-6 rounded-xl">
+            <DialogContent>
                     <DialogHeader>
-                        <DialogTitle className="text-zinc-200 font-bold">
+                        <DialogTitle className="text-xl font-bold">
                             Ajouter une catégorie
                         </DialogTitle>
-                        <DialogDescription className="text-sm font-extralight text-zinc-100">
+                        <DialogDescription className="text-sm font-extralight">
                             Veuillez choisir un nom pour ajouter une catégorie
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleSubmit}>
                         <div className="grid items-center grid-cols-4 gap-4 py-4">
                             <Label
-                                className="text-right text-zinc-200 text-sm font-semibold"
+                                className="text-right text-sm font-semibold"
                                 htmlFor="name"
                             >
                                 Nom
@@ -79,12 +78,11 @@ export function AddCategory({ session, onCategoryAdded }: { session: any, onCate
                             />
                         </div>
                         <DialogFooter>
-                            <Button type="submit" variant="outline">
+                            <Button type="submit">
                                 Ajouter
                             </Button>
                         </DialogFooter>
                     </form>
-                </div>
             </DialogContent>
         </Dialog>
     )

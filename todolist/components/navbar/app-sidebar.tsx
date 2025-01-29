@@ -11,7 +11,7 @@ import {
 import LoginButton from "@/components/navbar/loginButton";
 import { NavUser } from "@/components/navbar/navUser";
 import { NavItem } from "@/components/navbar/navItem";
-import { NavAdd } from "./navAdd";
+import { NavAdd } from "@/components/navbar/navAdd";
 import { getCategory } from "@/lib/bdd_orm/categoryServices";
 import { Category, Task } from "@prisma/client";
 import { getTask } from "@/lib/bdd_orm/tasksService";
@@ -21,7 +21,7 @@ export default function AppSidebar() {
   const [dataCategory, setDataCategory] = useState<Category[]>([]);
   const [dataTask, setDataTask] = useState<Task[]>([]);
 
-  const fetchCategories = async () => {
+  const fetchData = async () => {
     if (status === "authenticated" && session?.user.id) {
       const categories = await getCategory(session.user.id);
       const tasks = await getTask(session.user.id);
@@ -31,23 +31,24 @@ export default function AppSidebar() {
   };
 
   useEffect(() => {
-    fetchCategories();
+    fetchData();
   }, [status, session]);
 
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
-        <NavItem category={dataCategory} tasks={dataTask}/>
+        <NavItem category={dataCategory} tasks={dataTask} />
         <SidebarSeparator />
-        <NavAdd onCategoryAdded={fetchCategories} />
+        <NavAdd onDataAdded={fetchData} />
       </SidebarContent>
-      {status === "authenticated" ? (
-        <SidebarFooter>
+      <SidebarFooter>
+        {status === "authenticated" ? (
           <NavUser user={session.user} />
-        </SidebarFooter>
-      ) : (
-        <LoginButton />
-      )}
+        ) : (
+
+          <LoginButton />
+        )}
+      </SidebarFooter>
     </Sidebar>
   );
 }

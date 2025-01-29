@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import {
   Collapsible,
@@ -12,7 +12,6 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
@@ -25,26 +24,26 @@ export function NavItem({ category, tasks }: { category: Category[], tasks: Task
       <SidebarGroupLabel>Catégorie et Tâches</SidebarGroupLabel>
       <SidebarMenu>
         {category?.map((item) => (
-          <Collapsible key={item.name} asChild className="group/collapsible">
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.name}>
-                  <span>{item.name}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {tasks.map((task) => (
-                    <SidebarMenuSubItem key={task.title}>
-                      <SidebarMenuSubButton asChild>
+          <Collapsible key={item.id}>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton tooltip={item.name}>
+                <span>{item.name}</span>
+                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]:rotate-90" />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {tasks
+                  .filter(task => task.categoryId === item.id)
+                  .map((task) => (
+                    <SidebarMenuSubItem key={task.id}>
+                      <SidebarMenuSubButton>
                         <span>{task.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
+              </SidebarMenuSub>
+            </CollapsibleContent>
           </Collapsible>
         ))}
       </SidebarMenu>

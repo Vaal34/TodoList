@@ -55,7 +55,7 @@ model User {
 model Task {
   id          String     @id @default(cuid())
   title       String
-  description String?
+  importance  String
   isCompleted Boolean    @default(false)
   dueDate     DateTime?
   userId      String     // Clé étrangère vers User
