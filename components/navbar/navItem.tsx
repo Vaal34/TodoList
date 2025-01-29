@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Icon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import {
   Collapsible,
@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Category, Task } from "@prisma/client";
 
-export function NavItem({ category, tasks }: { category: Category[], tasks: Task[] }) {
+export function NavItem({
+  category,
+  tasks,
+}: {
+  category: Category[];
+  tasks: Task[];
+}) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Catégories</SidebarGroupLabel>
@@ -35,18 +41,19 @@ export function NavItem({ category, tasks }: { category: Category[], tasks: Task
             <CollapsibleContent>
               <SidebarMenuSub>
                 {tasks
-                  .filter(task => task.categoryId === item.id)
+                  .filter((task) => task.categoryId === item.id)
                   .map((task) => (
                     <SidebarMenuSubItem key={task.id}>
-                      <SidebarMenuSubButton 
+                      <SidebarMenuSubButton
                         className={`
-                          ${task.importance === "FAIBLE" 
-                              ? "bg-green-100 hover:bg-green-200" 
-                              : task.importance === "MOYEN" 
-                              ? "bg-yellow-100 hover:bg-yellow-200"
-                              : task.importance === "FORT"
-                              ? "bg-red-100 hover:bg-red-200"
-                              : "bg-gray-100 hover:bg-gray-200"
+                          ${
+                            task.importance === "FAIBLE"
+                              ? "bg-green-100 hover:bg-green-200"
+                              : task.importance === "MOYEN"
+                                ? "bg-yellow-100 hover:bg-yellow-200"
+                                : task.importance === "FORT"
+                                  ? "bg-red-100 hover:bg-red-200"
+                                  : "bg-gray-100 hover:bg-gray-200"
                           }
                         `}
                       >

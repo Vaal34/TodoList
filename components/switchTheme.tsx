@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
-export function ModeToggle(){
+export function ModeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -59,4 +59,4 @@ export function ModeToggle(){
       </svg>
     </Button>
   );
-};
+}

@@ -25,7 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`h-svh ${poppins.className}`}>
-        <ThemeProvider attribute="class"
+        <ThemeProvider
+          attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange

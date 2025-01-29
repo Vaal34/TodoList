@@ -27,12 +27,13 @@ export function LoginForm() {
 
       if (result?.error) {
         setError(
-          "L'adresse email n'est pas valide ou le service est indisponible."
+          "L'adresse email n'est pas valide ou le service est indisponible.",
         );
       } else {
         router.push("/verify-request");
       }
     } catch (error) {
+      console.error(error);
       setError("Une erreur est survenue lors de la connexion.");
     } finally {
       setIsLoading(false);
@@ -47,6 +48,7 @@ export function LoginForm() {
         redirect: true,
       });
     } catch (error) {
+      console.error(error);
       setError("Une erreur est survenue avec la connexion Google.");
       setIsLoading(false);
     }

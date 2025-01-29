@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import {
   Sidebar,
@@ -21,18 +21,18 @@ export default function AppSidebar() {
   const [dataCategory, setDataCategory] = useState<Category[]>([]);
   const [dataTask, setDataTask] = useState<Task[]>([]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (status === "authenticated" && session?.user.id) {
       const categories = await getCategory(session.user.id);
       const tasks = await getTask(session.user.id);
       setDataTask(tasks);
       setDataCategory(categories);
     }
-  };
+  }, [status, session]);
 
   useEffect(() => {
     fetchData();
-  }, [status, session]);
+  }, [status, session, fetchData]);
 
   return (
     <Sidebar collapsible="icon">
@@ -41,11 +41,10 @@ export default function AppSidebar() {
         <SidebarSeparator />
         <NavAdd onDataAdded={fetchData} />
       </SidebarContent>
-      <SidebarFooter> 
+      <SidebarFooter>
         {status === "authenticated" ? (
           <NavUser user={session.user} />
         ) : (
-
           <LoginButton />
         )}
       </SidebarFooter>

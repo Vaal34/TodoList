@@ -1,7 +1,13 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LoginForm } from "./loginForm"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { LoginForm } from "./loginForm";
 
 export default function SignIn() {
   return (
@@ -12,9 +18,9 @@ export default function SignIn() {
           <CardDescription>Sign in to continue</CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm/>
+          <LoginForm />
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
