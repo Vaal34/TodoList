@@ -31,6 +31,7 @@ import { Category } from "@prisma/client";
 import { addTask } from "@/lib/bdd_orm/tasksService";
 import { useMediaQuery } from "@react-hook/media-query";
 import { Session } from "next-auth";
+import { cn } from "@/lib/utils";
 
 const IMPORTANCE_LEVELS = {
   FAIBLE: "FAIBLE",
@@ -44,6 +45,7 @@ interface AddTasksProps {
 }
 
 const TaskForm = ({
+  className,
   handleSubmit,
   title,
   setTitle,
@@ -53,6 +55,7 @@ const TaskForm = ({
   setSelectedImportance,
   categories,
 }: {
+  className?: string;
   handleSubmit: (e: React.FormEvent) => void;
   title: string;
   setTitle: (value: string) => void;
@@ -62,7 +65,7 @@ const TaskForm = ({
   setSelectedImportance: (value: keyof typeof IMPORTANCE_LEVELS) => void;
   categories: Category[];
 }) => (
-  <form onSubmit={handleSubmit} className="grid gap-4">
+  <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
     <div className="grid items-start grid-cols-4 gap-4">
       <Label className="text-right text-sm font-semibold pt-2" htmlFor="title">
         Titre
@@ -224,6 +227,7 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
           </DialogDescription>
         </DrawerHeader>
         <TaskForm
+          className="px-4"
           handleSubmit={handleSubmit}
           title={task}
           setTitle={setTask}
