@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/drawer";
 import { CirclePlus } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getCategory } from "@/lib/bdd_orm/categoryServices";
 import {
   Select,
@@ -30,7 +30,6 @@ import {
 import { Category } from "@prisma/client";
 import { addTask } from "@/lib/bdd_orm/tasksService";
 import { useMediaQuery } from "@react-hook/media-query";
-import { cn } from "@/lib/utils";
 import { Session } from "next-auth";
 
 const IMPORTANCE_LEVELS = {
@@ -44,6 +43,90 @@ interface AddTasksProps {
   onDataAdded: () => void;
 }
 
+const TaskForm = ({
+  handleSubmit,
+  title,
+  setTitle,
+  selectedCategory,
+  setSelectedCategory,
+  selectedImportance,
+  setSelectedImportance,
+  categories,
+}: {
+  handleSubmit: (e: React.FormEvent) => void;
+  title: string;
+  setTitle: (value: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (value: string) => void;
+  selectedImportance: keyof typeof IMPORTANCE_LEVELS;
+  setSelectedImportance: (value: keyof typeof IMPORTANCE_LEVELS) => void;
+  categories: Category[];
+}) => (
+  <form onSubmit={handleSubmit} className="grid gap-4">
+    <div className="grid items-start grid-cols-4 gap-4">
+      <Label className="text-right text-sm font-semibold pt-2" htmlFor="title">
+        Titre
+      </Label>
+      <div className="col-span-3">
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Entrer le titre de la tâche"
+        />
+      </div>
+      <Label
+        className="text-right text-sm font-semibold pt-2"
+        htmlFor="category"
+      >
+        Catégorie
+      </Label>
+      <div className="col-span-3">
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+            <SelectValue placeholder="Choisir une catégorie" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.emoji} {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <Label
+        className="text-right text-sm font-semibold pt-2"
+        htmlFor="importance"
+      >
+        Importance
+      </Label>
+      <div className="col-span-3">
+        <Select
+          value={selectedImportance}
+          onValueChange={(value) =>
+            setSelectedImportance(value as keyof typeof IMPORTANCE_LEVELS)
+          }
+        >
+          <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+            <SelectValue placeholder="Choisir l'importance" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(IMPORTANCE_LEVELS).map(([key, value]) => (
+              <SelectItem key={key} value={key}>
+                {value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+    <DialogFooter className="pb-4 md:pb-0">
+      <Button type="submit">Ajouter</Button>
+    </DialogFooter>
+  </form>
+);
+
 export function AddTasks({ session, onDataAdded }: AddTasksProps) {
   const [task, setTask] = useState("");
   const [open, setOpen] = useState(false);
@@ -52,6 +135,25 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
   const [selectedImportance, setSelectedImportance] =
     useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE");
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const fetchCategories = useCallback(async () => {
+    if (session?.user?.id) {
+      const categories = await getCategory(session.user.id);
+      setCategories(categories);
+    }
+  }, [session]);
+
+  // Refresh categories when modal opens
+  useEffect(() => {
+    if (open) {
+      fetchCategories();
+    }
+  }, [open, fetchCategories]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,84 +177,6 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
     }
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const categories = await getCategory(session?.user?.id);
-      setCategories(categories);
-    };
-    fetchCategories();
-  }, [session, onDataAdded]);
-
-  const TaskForm = ({ className }: { className?: string }) => (
-    <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
-      <div className="grid items-start grid-cols-4 gap-4">
-        <Label
-          className="text-right text-sm font-semibold pt-2"
-          htmlFor="title"
-        >
-          Titre
-        </Label>
-        <Input
-          id="title"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          placeholder="Titre de la tâche"
-          className="col-span-3"
-        />
-
-        <Label
-          className="text-right text-sm font-semibold pt-2"
-          htmlFor="category"
-        >
-          Catégorie
-        </Label>
-        <div className="col-span-3">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
-              <SelectValue placeholder="Choisir une catégorie" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Label
-          className="text-right text-sm font-semibold pt-2"
-          htmlFor="importance"
-        >
-          Importance
-        </Label>
-        <div className="col-span-3">
-          <Select
-            value={selectedImportance}
-            onValueChange={(value) =>
-              setSelectedImportance(value as keyof typeof IMPORTANCE_LEVELS)
-            }
-          >
-            <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
-              <SelectValue placeholder="Choisir l'importance" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(IMPORTANCE_LEVELS).map(([key, value]) => (
-                <SelectItem key={key} value={key}>
-                  {value}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <DialogFooter className="pb-4 md:pb-0">
-        <Button type="submit">Ajouter</Button>
-      </DialogFooter>
-    </form>
-  );
-
   if (isDesktop) {
     return (
       <Dialog onOpenChange={setOpen} open={open}>
@@ -169,7 +193,16 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
               Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
             </DialogDescription>
           </DialogHeader>
-          <TaskForm />
+          <TaskForm
+            handleSubmit={handleSubmit}
+            title={task}
+            setTitle={setTask}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            selectedImportance={selectedImportance}
+            setSelectedImportance={setSelectedImportance}
+            categories={categories}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -190,7 +223,16 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
             Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
           </DialogDescription>
         </DrawerHeader>
-        <TaskForm className="px-4" />
+        <TaskForm
+          handleSubmit={handleSubmit}
+          title={task}
+          setTitle={setTask}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedImportance={selectedImportance}
+          setSelectedImportance={setSelectedImportance}
+          categories={categories}
+        />
       </DrawerContent>
     </Drawer>
   );

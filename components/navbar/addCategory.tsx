@@ -69,7 +69,7 @@ export function AddCategory({ session, onDataAdded }: AddCategoryProps) {
         <DialogTrigger asChild>
           <SidebarMenuButton tooltip="Ajouter une catégorie">
             <FolderPlus />
-            <span>Ajouter une tâches</span>
+            <span>Ajouter une catégorie</span>
           </SidebarMenuButton>
         </DialogTrigger>
         <DialogContent>
