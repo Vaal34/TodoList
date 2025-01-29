@@ -2,11 +2,12 @@
 
 import prisma from "@/lib/prisma";
 
-export async function addCategory(name: string, userId: string) {
+export async function addCategory(name: string, userId: string, emoji: string) {
     await prisma.category.create({
         data: {
             name,
             userId,
+            emoji,
         },
     });
 }

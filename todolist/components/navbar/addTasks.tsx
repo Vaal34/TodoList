@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { CirclePlus } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
@@ -16,7 +17,8 @@ import { getCategory } from "@/lib/bdd_orm/categoryServices";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Category } from "@prisma/client";
 import { addTask } from "@/lib/bdd_orm/tasksService";
-import { on } from "events";
+import { useMediaQuery } from "@react-hook/media-query";
+import { cn } from "@/lib/utils";
 
 const IMPORTANCE_LEVELS = {
   FAIBLE: "FAIBLE",
@@ -26,16 +28,16 @@ const IMPORTANCE_LEVELS = {
 
 export function AddTasks({ session, onDataAdded }: { session: any, onDataAdded: () => void }) {
     const [task, setTask] = useState("");
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState("")
-    const [selectedImportance, setSelectedImportance] = useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE")
-
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedImportance, setSelectedImportance] = useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE");
+    const isDesktop = useMediaQuery("(min-width: 768px)");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (task.trim() === "") {
-            alert("Veuillez entrer un nom de catégorie.");
+            alert("Veuillez entrer un titre de tâche.");
             return;
         }
         try {
@@ -44,14 +46,10 @@ export function AddTasks({ session, onDataAdded }: { session: any, onDataAdded: 
                 alert("Utilisateur non authentifié.");
                 return;
             }
-
-            // Ajouter la catégorie dans la base de données
             await addTask(task, userId, selectedCategory, selectedImportance);
-
-            // Fermer le modal et rafraîchir les catégories
             setTask("");
             setOpen(false);
-            onDataAdded(); // Appelle la fonction pour rafraîchir
+            onDataAdded();
         } catch (error) {
             alert("Une erreur s'est produite. Veuillez réessayer.");
         }
@@ -59,105 +57,87 @@ export function AddTasks({ session, onDataAdded }: { session: any, onDataAdded: 
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const categories = await getCategory(session?.user?.id)
-            setCategories(categories)
-        }
-        fetchCategories()
-    }, [session, onDataAdded])
+            const categories = await getCategory(session?.user?.id);
+            setCategories(categories);
+        };
+        fetchCategories();
+    }, [session, onDataAdded]);
+
+    const TaskForm = ({ className }: { className?: string }) => (
+        <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
+            <div className="grid items-start grid-cols-4 gap-4">
+                <Label className="text-right text-sm font-semibold pt-2" htmlFor="title">Titre</Label>
+                <Input id="title" value={task} onChange={(e) => setTask(e.target.value)} placeholder="Titre de la tâche" className="col-span-3" />
+
+                <Label className="text-right text-sm font-semibold pt-2" htmlFor="category">Catégorie</Label>
+                <div className="col-span-3">
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+                            <SelectValue placeholder="Choisir une catégorie" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {categories.map((category) => (
+                                <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <Label className="text-right text-sm font-semibold pt-2" htmlFor="importance">Importance</Label>
+                <div className="col-span-3">
+                    <Select value={selectedImportance} onValueChange={(value) => setSelectedImportance(value as keyof typeof IMPORTANCE_LEVELS)}>
+                        <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+                            <SelectValue placeholder="Choisir l'importance" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {Object.entries(IMPORTANCE_LEVELS).map(([key, value]) => (
+                                <SelectItem key={key} value={key}>{value}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            <DialogFooter className="pb-4 md:pb-0">
+                <Button type="submit">Ajouter</Button>
+            </DialogFooter>
+        </form>
+    );
+
+    if (isDesktop) {
+        return (
+            <Dialog onOpenChange={setOpen} open={open}>
+                <DialogTrigger asChild>
+                    <SidebarMenuButton tooltip="Ajouter une tâche">
+                        <CirclePlus />
+                        <span>Ajouter une tâche</span>
+                    </SidebarMenuButton>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Ajouter une tâche</DialogTitle>
+                        <DialogDescription>Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.</DialogDescription>
+                    </DialogHeader>
+                    <TaskForm />
+                </DialogContent>
+            </Dialog>
+        );
+    }
 
     return (
-        <Dialog onOpenChange={setOpen} open={open}>
-            <DialogTrigger asChild>
-                <SidebarMenuButton>
-                    <span>Ajouter une tâches</span>
-                    <CirclePlus className="ml-auto" />
+        <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+                <SidebarMenuButton tooltip="Ajouter une tâche">
+                    <CirclePlus />
+                    <span>Ajouter une tâche</span>
                 </SidebarMenuButton>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">
-                        Ajouter une tâches
-                    </DialogTitle>
-                    <DialogDescription className="text-sm font-extralight">
-                        Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit}>
-                    <div className="grid items-start grid-cols-4 gap-4 py-4">
-                        <Label
-                            className="text-right text-zinc-800 text-sm font-semibold pt-2"
-                            htmlFor="title"
-                        >
-                            Titre
-                        </Label>
-                        <Input
-                            id="title"
-                            value={task}
-                            onChange={(e) => setTask(e.target.value)}
-                            placeholder="titre de la tâche"
-                            className="col-span-3"
-                        />
-
-                        <Label
-                            className="text-right text-zinc-800 text-sm font-semibold pt-2"
-                            htmlFor="category"
-                        >
-                            Catégorie
-                        </Label>
-                        <div className="col-span-3">
-                            <Select
-                                value={selectedCategory}
-                                onValueChange={setSelectedCategory}
-                            >
-                                <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
-                                    <SelectValue placeholder="Choisir une catégorie" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem
-                                            key={category.id}
-                                            value={category.id}
-                                        >
-                                            {category.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <Label
-                            className="text-right text-zinc-800 text-sm font-semibold pt-2"
-                            htmlFor="importance"
-                        >
-                            Importance
-                        </Label>
-                        <div className="col-span-3">
-                            <Select
-                                value={selectedImportance}
-                                onValueChange={(value) => setSelectedImportance(value as keyof typeof IMPORTANCE_LEVELS)}
-                            >
-                                <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
-                                    <SelectValue placeholder="Choisir l'importance" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(IMPORTANCE_LEVELS).map(([key, value]) => (
-                                        <SelectItem
-                                            key={key}
-                                            value={key}
-                                        >
-                                            {value}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit">
-                            Ajouter
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
+            </DrawerTrigger>
+            <DrawerContent>
+                <DrawerHeader>
+                    <DrawerTitle>Ajouter une tâche</DrawerTitle>
+                    <DialogDescription>Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.</DialogDescription>
+                </DrawerHeader>
+                <TaskForm className="px-4" />
+            </DrawerContent>
+        </Drawer>
+    );
 }

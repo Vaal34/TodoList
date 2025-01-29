@@ -41,7 +41,7 @@ export default function AppSidebar() {
         <SidebarSeparator />
         <NavAdd onDataAdded={fetchData} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter> 
         {status === "authenticated" ? (
           <NavUser user={session.user} />
         ) : (

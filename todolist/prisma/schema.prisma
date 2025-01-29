@@ -72,6 +72,7 @@ model Category {
   id        String   @id @default(cuid())
   name      String
   userId    String   // Clé étrangère vers User
+  emoji     String
   tasks     Task[]   // Relation avec les tâches
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
