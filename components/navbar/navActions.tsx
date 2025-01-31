@@ -4,16 +4,16 @@ import { AddCategory } from "@/components/navbar/add/addCategory";
 import { AddTasks } from "@/components/navbar/add/addTasks";
 import { DeleteItem } from "./delete/deleteModal";
 
-export function NavAdd({ onDataAdded }: { onDataAdded: () => void }) {
+export function NavAdd() {
   const { data: session } = useSession();
 
   return (
     <SidebarGroup>
       <SidebarMenu>
         <SidebarMenuItem>
-          {session && <AddCategory session={session} onDataAdded={onDataAdded} />}
-          {session && <AddTasks session={session} onDataAdded={onDataAdded} />}
-          {session && <DeleteItem session={session}/>}
+          {session && <AddCategory session={session} />}
+          {session && <AddTasks session={session} />}
+          {session && <DeleteItem session={session} />}
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

@@ -1,5 +1,5 @@
-import { DialogFooter, DialogHeader } from "../../ui/dialog";
-import { Button } from "../../ui/button";
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/drawer";
 import { CirclePlus } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { useEffect, useState, useCallback } from "react";
-import { getCategory } from "@/lib/bdd_orm/categoryServices";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -28,10 +27,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@prisma/client";
-import { addTask } from "@/lib/bdd_orm/tasksService";
 import { useMediaQuery } from "@react-hook/media-query";
 import { Session } from "next-auth";
 import { cn } from "@/lib/utils";
+import { useAddTask, useCategories } from "@/hooks/useData";
 
 const IMPORTANCE_LEVELS = {
   FAIBLE: "FAIBLE",
@@ -41,7 +40,6 @@ const IMPORTANCE_LEVELS = {
 
 interface AddTasksProps {
   session: Session;
-  onDataAdded: () => void;
 }
 
 const TaskForm = ({
@@ -54,6 +52,7 @@ const TaskForm = ({
   selectedImportance,
   setSelectedImportance,
   categories,
+  isLoading,
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
@@ -64,6 +63,7 @@ const TaskForm = ({
   selectedImportance: keyof typeof IMPORTANCE_LEVELS;
   setSelectedImportance: (value: keyof typeof IMPORTANCE_LEVELS) => void;
   categories: Category[];
+  isLoading: boolean;
 }) => (
   <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
     <div className="grid items-start grid-cols-4 gap-4">
@@ -76,6 +76,7 @@ const TaskForm = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Entrer le titre de la tâche"
+          disabled={isLoading}
         />
       </div>
       <Label
@@ -85,7 +86,11 @@ const TaskForm = ({
         Catégorie
       </Label>
       <div className="col-span-3">
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+        <Select
+          value={selectedCategory}
+          onValueChange={setSelectedCategory}
+          disabled={isLoading}
+        >
           <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
             <SelectValue placeholder="Choisir une catégorie" />
           </SelectTrigger>
@@ -110,6 +115,7 @@ const TaskForm = ({
           onValueChange={(value) =>
             setSelectedImportance(value as keyof typeof IMPORTANCE_LEVELS)
           }
+          disabled={isLoading}
         >
           <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
             <SelectValue placeholder="Choisir l'importance" />
@@ -125,37 +131,24 @@ const TaskForm = ({
       </div>
     </div>
     <DialogFooter className="pb-4 md:pb-0">
-      <Button type="submit">Ajouter</Button>
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Ajout en cours..." : "Ajouter"}
+      </Button>
     </DialogFooter>
   </form>
 );
 
-export function AddTasks({ session, onDataAdded }: AddTasksProps) {
+export function AddTasks({ session }: AddTasksProps) {
   const [task, setTask] = useState("");
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedImportance, setSelectedImportance] =
     useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE");
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const fetchCategories = useCallback(async () => {
-    if (session?.user?.id) {
-      const categories = await getCategory(session.user.id);
-      setCategories(categories);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (open) {
-      fetchCategories();
-    }
-  }, [open, fetchCategories]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  // Utilisation des hooks React Query
+  const addTaskMutation = useAddTask();
+  const { data: categories = [] } = useCategories(session?.user?.id ?? "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,15 +157,18 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
       return;
     }
     try {
-      const userId = session?.user.id;
-      if (!userId) {
-        alert("Utilisateur non authentifié.");
-        return;
-      }
-      await addTask(task, userId, selectedCategory, selectedImportance);
+      await addTaskMutation.mutateAsync({
+        title: task,
+        userId: session.user.id,
+        category: selectedCategory,
+        importance: selectedImportance,
+      });
+
+      // Réinitialisation du formulaire
       setTask("");
+      setSelectedCategory("");
+      setSelectedImportance("FAIBLE");
       setOpen(false);
-      onDataAdded();
     } catch (error) {
       console.error(error);
       alert("Une erreur s'est produite. Veuillez réessayer.");
@@ -204,6 +200,7 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
             selectedImportance={selectedImportance}
             setSelectedImportance={setSelectedImportance}
             categories={categories}
+            isLoading={addTaskMutation.isPending}
           />
         </DialogContent>
       </Dialog>
@@ -235,6 +232,7 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
           selectedImportance={selectedImportance}
           setSelectedImportance={setSelectedImportance}
           categories={categories}
+          isLoading={addTaskMutation.isPending}
         />
       </DrawerContent>
     </Drawer>

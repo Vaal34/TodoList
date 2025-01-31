@@ -12,7 +12,6 @@ import {
 import { FolderPlus } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useState } from "react";
-import { addCategory } from "@/lib/bdd_orm/categoryServices";
 import { useMediaQuery } from "@react-hook/media-query";
 import EmojiPicker from "emoji-picker-react";
 import {
@@ -24,18 +23,20 @@ import {
 } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { Session } from "next-auth";
+import { useAddCategory } from "@/hooks/useData";
 
 interface AddCategoryProps {
   session: Session;
-  onDataAdded: () => void;
 }
 
-export function AddCategory({ session, onDataAdded }: AddCategoryProps) {
+export function AddCategory({ session }: AddCategoryProps) {
   const [categoryName, setCategoryName] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const addCategoryMutation = useAddCategory();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,19 +45,15 @@ export function AddCategory({ session, onDataAdded }: AddCategoryProps) {
       return;
     }
     try {
-      const userId = session?.user.id;
-      if (!userId) {
-        alert("Utilisateur non authentifié.");
-        return;
-      }
-      // Ajouter la catégorie avec l'emoji dans la base de données
-      await addCategory(categoryName, userId, selectedEmoji);
+      await addCategoryMutation.mutateAsync({
+        name: categoryName,
+        userId: session.user.id,
+        emoji: selectedEmoji,
+      });
 
-      // Fermer le modal et rafraîchir les catégories
       setCategoryName("");
       setSelectedEmoji("");
       setOpen(false);
-      onDataAdded();
     } catch (error) {
       console.error(error);
       alert("Une erreur s'est produite. Veuillez réessayer.");
@@ -87,6 +84,7 @@ export function AddCategory({ session, onDataAdded }: AddCategoryProps) {
             setSelectedEmoji={setSelectedEmoji}
             showEmojiPicker={showEmojiPicker}
             setShowEmojiPicker={setShowEmojiPicker}
+            isLoading={addCategoryMutation.isPending}
           />
         </DialogContent>
       </Dialog>
@@ -117,6 +115,7 @@ export function AddCategory({ session, onDataAdded }: AddCategoryProps) {
           setSelectedEmoji={setSelectedEmoji}
           showEmojiPicker={showEmojiPicker}
           setShowEmojiPicker={setShowEmojiPicker}
+          isLoading={addCategoryMutation.isPending}
         />
       </DrawerContent>
     </Drawer>
@@ -132,6 +131,7 @@ function CategoryForm({
   setSelectedEmoji,
   showEmojiPicker,
   setShowEmojiPicker,
+  isLoading,
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
@@ -141,6 +141,7 @@ function CategoryForm({
   setSelectedEmoji: (emoji: string) => void;
   showEmojiPicker: boolean;
   setShowEmojiPicker: (show: boolean) => void;
+  isLoading: boolean;
 }) {
   return (
     <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
@@ -151,6 +152,7 @@ function CategoryForm({
           onChange={(e) => setCategoryName(e.target.value)}
           placeholder="Nom de la catégorie"
           className="col-span-3"
+          disabled={isLoading}
         />
 
         <Label className="text-right text-sm font-semibold">Emoji</Label>

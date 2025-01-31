@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import {
   Sidebar,
@@ -12,34 +11,19 @@ import LoginButton from "@/components/navbar/loginButton";
 import { NavUser } from "@/components/navbar/navUser";
 import { NavItem } from "@/components/navbar/navItem";
 import { NavAdd } from "@/components/navbar/navActions";
-import { getCategory } from "@/lib/bdd_orm/categoryServices";
-import { Category, Task } from "@prisma/client";
-import { getTask } from "@/lib/bdd_orm/tasksService";
+import { useCategories, useTasks } from "@/hooks/useData";
 
 export default function AppSidebar() {
   const { data: session, status } = useSession();
-  const [dataCategory, setDataCategory] = useState<Category[]>([]);
-  const [dataTask, setDataTask] = useState<Task[]>([]);
-
-  const fetchData = useCallback(async () => {
-    if (status === "authenticated" && session?.user.id) {
-      const categories = await getCategory(session.user.id);
-      const tasks = await getTask(session.user.id);
-      setDataTask(tasks);
-      setDataCategory(categories);
-    }
-  }, [status, session]);
-
-  useEffect(() => {
-    fetchData();
-  }, [status, session, fetchData]);
+  const { data: categories } = useCategories(session?.user?.id ?? "");
+  const { data: tasks } = useTasks(session?.user?.id ?? "");
 
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarContent>
-        <NavItem category={dataCategory} tasks={dataTask} />
+        <NavItem category={categories ?? []} tasks={tasks ?? []} />
         <SidebarSeparator />
-        <NavAdd onDataAdded={fetchData} />
+        <NavAdd />
       </SidebarContent>
       <SidebarFooter>
         {status === "authenticated" ? (

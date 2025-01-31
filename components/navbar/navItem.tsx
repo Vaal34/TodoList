@@ -46,16 +46,19 @@ export function NavItem({
                     <SidebarMenuSubItem key={task.id}>
                       <SidebarMenuSubButton>
                         <span className="truncate  w-4/5">{task.title}</span>
-                        <span className={`w-3 h-3 rounded-full ml-auto
-                          ${task.importance === "FAIBLE"
-                            ? "bg-green-500"
-                            : task.importance === "MOYEN"
-                              ? "bg-yellow-500"
-                              : task.importance === "FORT"
-                                ? "bg-red-500"
-                                : "bg-gray-100 hover:bg-gray-200"
+                        <span
+                          className={`w-3 h-3 rounded-full ml-auto
+                          ${
+                            task.importance === "FAIBLE"
+                              ? "bg-green-500"
+                              : task.importance === "MOYEN"
+                                ? "bg-yellow-500"
+                                : task.importance === "FORT"
+                                  ? "bg-red-500"
+                                  : "bg-gray-100 hover:bg-gray-200"
                           }
-                          `}></span>
+                          `}
+                        ></span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

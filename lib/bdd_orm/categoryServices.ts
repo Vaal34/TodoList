@@ -20,10 +20,10 @@ export async function getCategory(userId: string) {
   });
 }
 
-export async function deleteCategory(categoryId: string){
+export async function deleteCategory(categoryId: string) {
   return await prisma.category.delete({
     where: {
       id: categoryId,
-    }
-  })
+    },
+  });
 }

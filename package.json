@@ -26,6 +26,7 @@
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@react-hook/media-query": "^1.1.1",
+    "@tanstack/react-query-devtools": "^5.66.0",
     "@tanstack/react-table": "^8.20.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

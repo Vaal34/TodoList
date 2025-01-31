@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import SessionProviderWrapper from "@/lib/sessionProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/switchTheme";
+import WrapperQueryClientProvider from "@/components/wrapperQueryProviders";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,23 +26,25 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`h-svh ${poppins.className}`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SessionProviderWrapper>
-            <SidebarProvider defaultOpen={true}>
-              <AppSidebar />
-              <main className="w-svw relative">
-                <ModeToggle />
-                <SidebarTrigger className="absolute top-4 left-4" />
-                {children}
-              </main>
-            </SidebarProvider>
-          </SessionProviderWrapper>
-        </ThemeProvider>
+        <WrapperQueryClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SessionProviderWrapper>
+              <SidebarProvider defaultOpen={true}>
+                <AppSidebar />
+                <main className="w-svw relative">
+                  <ModeToggle />
+                  <SidebarTrigger className="absolute top-4 left-4" />
+                  {children}
+                </main>
+              </SidebarProvider>
+            </SessionProviderWrapper>
+          </ThemeProvider>
+        </WrapperQueryClientProvider>
       </body>
     </html>
   );
