@@ -11,11 +11,34 @@ export default {
     extend: {
       animation: {
         "line-shadow": "line-shadow 15s linear infinite",
+        "shake": "shake infinite 0.7s cubic-bezier(.36,.07,.19,.97) both",
+        "tilt-shake": "tilt-shake 0.2s infinite",
       },
       keyframes: {
         "line-shadow": {
           "0%": { "background-position": "0 0" },
           "100%": { "background-position": "100% -100%" },
+        },
+        "shake" : {
+          "00%, 100%": {
+              transform: "translate3d(-0.25px, 0, 0)"
+          },
+          "20%, 80%" : {
+              transform: "translate3d(0.25px, 0, 0)"
+          },
+          "30%, 50%, 70%": {
+              transform: "translate3d(-1px, 0, 0)"
+          },
+          "40%, 60%": {
+              transform: "translate3d(1px, 0, 0)"
+          }
+      },
+        "tilt-shake": {
+          "0%": { transform: "rotate(0deg)" },
+          "25%": { transform: "rotate(1.5deg)" },
+          "50%": { transform: "rotate(0deg)" },
+          "75%": { transform: "rotate(-1.5deg)" },
+          "100%": { transform: "rotate(0deg)" },
         },
       },
       colors: {

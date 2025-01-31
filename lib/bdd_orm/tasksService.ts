@@ -26,3 +26,11 @@ export async function getTask(userId: string) {
     },
   });
 }
+
+export async function deleteTask(taskId: string){
+  return await prisma.task.delete({
+    where: {
+      id: taskId,
+    }
+  })
+}

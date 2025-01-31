@@ -1,5 +1,5 @@
-import { DialogFooter, DialogHeader } from "../ui/dialog";
-import { Button } from "../ui/button";
+import { DialogFooter, DialogHeader } from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -146,7 +146,6 @@ export function AddTasks({ session, onDataAdded }: AddTasksProps) {
     }
   }, [session]);
 
-  // Refresh categories when modal opens
   useEffect(() => {
     if (open) {
       fetchCategories();

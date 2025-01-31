@@ -45,7 +45,7 @@ export function NavItem({
                   .map((task) => (
                     <SidebarMenuSubItem key={task.id}>
                       <SidebarMenuSubButton>
-                        <span>{task.title}</span>
+                        <span className="truncate  w-4/5">{task.title}</span>
                         <span className={`w-3 h-3 rounded-full ml-auto
                           ${task.importance === "FAIBLE"
                             ? "bg-green-500"

@@ -11,7 +11,7 @@ import {
 import LoginButton from "@/components/navbar/loginButton";
 import { NavUser } from "@/components/navbar/navUser";
 import { NavItem } from "@/components/navbar/navItem";
-import { NavAdd } from "@/components/navbar/navAdd";
+import { NavAdd } from "@/components/navbar/navActions";
 import { getCategory } from "@/lib/bdd_orm/categoryServices";
 import { Category, Task } from "@prisma/client";
 import { getTask } from "@/lib/bdd_orm/tasksService";
@@ -35,7 +35,7 @@ export default function AppSidebar() {
   }, [status, session, fetchData]);
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" variant="floating">
       <SidebarContent>
         <NavItem category={dataCategory} tasks={dataTask} />
         <SidebarSeparator />
