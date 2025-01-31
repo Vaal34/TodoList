@@ -19,8 +19,9 @@ export function DeleteTasks({
   taches: Task[];
   categories: Category[];
 }) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const deleteTaskMutation = useDeleteTask();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleSelect = (value: string) => {
     setSelectedCategory(value);
@@ -28,9 +29,12 @@ export function DeleteTasks({
 
   const handleDelete = async (taskId: string) => {
     try {
+      setDeletingId(taskId);
       await deleteTaskMutation.mutateAsync(taskId);
     } catch (error) {
       console.error("Failed to delete task:", error);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -39,8 +43,8 @@ export function DeleteTasks({
   );
 
   return (
-    <div>
-      <Select onValueChange={handleSelect}>
+    <div className="flex flex-col gap-2">
+      <Select onValueChange={handleSelect} value={selectedCategory}>
         <SelectTrigger>
           <SelectValue placeholder="Selectionnez une catégorie" />
         </SelectTrigger>
@@ -61,12 +65,12 @@ export function DeleteTasks({
             <Button
               key={tache.id}
               onClick={() => handleDelete(tache.id)}
-              disabled={deleteTaskMutation.isPending}
+              disabled={deletingId === tache.id}
               className="w-full overflow-hidden flex items-center justify-between gap-2 hover:bg-red-500 transition-all duration-400 hover:animate-tilt-shake"
             >
               <span className="truncate">{tache.title}</span>
               <SquareX
-                className={deleteTaskMutation.isPending ? "animate-spin" : ""}
+                className={deletingId === tache.id ? "animate-spin" : ""}
               />
             </Button>
           ))}
