@@ -180,6 +180,7 @@ export function AddTasks({ session }: AddTasksProps) {
       setSelectedImportance("FAIBLE");
       setOpen(false);
     } catch (error) {
+      console.error(error)
       setErrorForm("Une erreur est survenue lors de l'ajout de la tâche");
     }
   };

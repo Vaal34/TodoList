@@ -61,8 +61,8 @@ export function NavSettings() {
                             </DrawerTrigger>
                             <DrawerContent>
                                 <DrawerHeader>
-                                    <DialogTitle>Paramètres de l'application</DialogTitle>
-                                    <DialogDescription>Ici vous pouvez modifier les paramètres de l'application</DialogDescription>
+                                    <DialogTitle>Paramètres de l&apos;application</DialogTitle>
+                                    <DialogDescription>Ici vous pouvez modifier les paramètres de l&apos;application</DialogDescription>
                                 </DrawerHeader>
     
                                 <div className="grid items-center grid-cols-2 gap-2 text-right p-2">
@@ -116,8 +116,8 @@ export function NavSettings() {
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Paramètres de l'application</DialogTitle>
-                                <DialogDescription>Ici vous pouvez modifier les paramètres de l'application</DialogDescription>
+                                <DialogTitle>Paramètres de l&apos;application</DialogTitle>
+                                <DialogDescription>Ici vous pouvez modifier les paramètres de l&apos;application</DialogDescription>
                             </DialogHeader>
 
                             <div className="grid items-center grid-cols-3 gap-2 text-right">
