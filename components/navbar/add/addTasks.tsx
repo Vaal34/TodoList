@@ -46,24 +46,26 @@ const TaskForm = ({
   className,
   handleSubmit,
   title,
-  setTitle,
+  setTask,
   selectedCategory,
   setSelectedCategory,
   selectedImportance,
   setSelectedImportance,
   categories,
   isLoading,
+  setErrorForm
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
   title: string;
-  setTitle: (value: string) => void;
+  setTask: (value: string) => void;
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
   selectedImportance: keyof typeof IMPORTANCE_LEVELS;
   setSelectedImportance: (value: keyof typeof IMPORTANCE_LEVELS) => void;
   categories: Category[];
   isLoading: boolean;
+  setErrorForm: (value: string) => void;
 }) => (
   <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
     <div className="grid items-start grid-cols-4 gap-4">
@@ -74,7 +76,12 @@ const TaskForm = ({
         <Input
           id="title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setTask(e.target.value);
+            if (e.target.value.trim() !== "") {
+              setErrorForm("");
+            }
+          }}
           placeholder="Entrer le titre de la tâche"
           disabled={isLoading}
         />
@@ -142,6 +149,7 @@ export function AddTasks({ session }: AddTasksProps) {
   const [task, setTask] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [errorForm, setErrorForm] = useState<string>("")
   const [selectedImportance, setSelectedImportance] =
     useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE");
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -152,10 +160,13 @@ export function AddTasks({ session }: AddTasksProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (task.trim() === "") {
-      alert("Veuillez entrer un titre de tâche.");
+    if (task.trim() === "" || !selectedCategory) {
+      setErrorForm("Merci de remplir tous les champs.");
       return;
     }
+
+    setErrorForm("");
+
     try {
       await addTaskMutation.mutateAsync({
         title: task,
@@ -164,14 +175,12 @@ export function AddTasks({ session }: AddTasksProps) {
         importance: selectedImportance,
       });
 
-      // Réinitialisation du formulaire
       setTask("");
       setSelectedCategory("");
       setSelectedImportance("FAIBLE");
       setOpen(false);
     } catch (error) {
-      console.error(error);
-      alert("Une erreur s'est produite. Veuillez réessayer.");
+      setErrorForm("Une erreur est survenue lors de l'ajout de la tâche");
     }
   };
 
@@ -191,16 +200,22 @@ export function AddTasks({ session }: AddTasksProps) {
               Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
             </DialogDescription>
           </DialogHeader>
+          {errorForm && (
+            <p className="text-red-600">
+              {errorForm}
+            </p>
+          )}
           <TaskForm
             handleSubmit={handleSubmit}
             title={task}
-            setTitle={setTask}
+            setTask={setTask}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
             selectedImportance={selectedImportance}
             setSelectedImportance={setSelectedImportance}
             categories={categories}
             isLoading={addTaskMutation.isPending}
+            setErrorForm={setErrorForm}
           />
         </DialogContent>
       </Dialog>
@@ -222,17 +237,23 @@ export function AddTasks({ session }: AddTasksProps) {
             Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
           </DialogDescription>
         </DrawerHeader>
+        {errorForm && (
+          <p className="text-red-600 text-center pb-4">
+            {errorForm}
+          </p>
+        )}
         <TaskForm
           className="px-4"
           handleSubmit={handleSubmit}
           title={task}
-          setTitle={setTask}
+          setTask={setTask}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           selectedImportance={selectedImportance}
           setSelectedImportance={setSelectedImportance}
           categories={categories}
           isLoading={addTaskMutation.isPending}
+          setErrorForm={setErrorForm}
         />
       </DrawerContent>
     </Drawer>

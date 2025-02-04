@@ -34,14 +34,15 @@ export function AddCategory({ session }: AddCategoryProps) {
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [open, setOpen] = useState(false);
+  const [errorForm, setErrorForm] = useState<string>("")
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const addCategoryMutation = useAddCategory();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (categoryName.trim() === "") {
-      alert("Veuillez entrer un nom de catégorie.");
+    if (categoryName.trim() === "" || !selectedEmoji) {
+      setErrorForm("Veuillez remplir tous les champs")
       return;
     }
     try {
@@ -56,7 +57,7 @@ export function AddCategory({ session }: AddCategoryProps) {
       setOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Une erreur s'est produite. Veuillez réessayer.");
+      setErrorForm("Une erreur est survenue lors de l'ajout de la catégorie");
     }
   };
 
@@ -76,6 +77,9 @@ export function AddCategory({ session }: AddCategoryProps) {
               Veuillez choisir un nom et une icône pour la catégorie
             </DialogDescription>
           </DialogHeader>
+          {errorForm && (
+          <p className="text-red-600">{errorForm}</p>
+        )}
           <CategoryForm
             handleSubmit={handleSubmit}
             categoryName={categoryName}
@@ -85,6 +89,7 @@ export function AddCategory({ session }: AddCategoryProps) {
             showEmojiPicker={showEmojiPicker}
             setShowEmojiPicker={setShowEmojiPicker}
             isLoading={addCategoryMutation.isPending}
+            setErrorForm={setErrorForm}
           />
         </DialogContent>
       </Dialog>
@@ -106,6 +111,9 @@ export function AddCategory({ session }: AddCategoryProps) {
             Veuillez choisir un nom et une icône pour la catégorie
           </DialogDescription>
         </DrawerHeader>
+        {errorForm && (
+          <p className="text-red-600 pb-4 text-center">{errorForm}</p>
+        )}
         <CategoryForm
           className="px-4"
           handleSubmit={handleSubmit}
@@ -116,6 +124,7 @@ export function AddCategory({ session }: AddCategoryProps) {
           showEmojiPicker={showEmojiPicker}
           setShowEmojiPicker={setShowEmojiPicker}
           isLoading={addCategoryMutation.isPending}
+          setErrorForm={setErrorForm}
         />
       </DrawerContent>
     </Drawer>
@@ -132,6 +141,7 @@ function CategoryForm({
   showEmojiPicker,
   setShowEmojiPicker,
   isLoading,
+  setErrorForm
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
@@ -142,6 +152,7 @@ function CategoryForm({
   showEmojiPicker: boolean;
   setShowEmojiPicker: (show: boolean) => void;
   isLoading: boolean;
+  setErrorForm: (value: string) => void;
 }) {
   return (
     <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
@@ -149,12 +160,16 @@ function CategoryForm({
         <Label className="text-right text-sm font-semibold">Nom</Label>
         <Input
           value={categoryName}
-          onChange={(e) => setCategoryName(e.target.value)}
+          onChange={(e) => {
+            setCategoryName(e.target.value)
+            if (e.target.value.trim() != "") {
+              setErrorForm("");
+            }
+          }}
           placeholder="Nom de la catégorie"
           className="col-span-3"
           disabled={isLoading}
         />
-
         <Label className="text-right text-sm font-semibold">Emoji</Label>
         <div className="col-span-3">
           <Button

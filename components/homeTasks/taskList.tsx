@@ -9,6 +9,7 @@ interface TaskListProps {
     createdAt: Date;
     categoryEmoji: string;
     categoryName: string;
+    importance: string;
   }[];
   onDelete: (taskId: string) => void;
 }

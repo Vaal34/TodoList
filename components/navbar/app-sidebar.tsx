@@ -12,6 +12,7 @@ import { NavUser } from "@/components/navbar/navUser";
 import { NavItem } from "@/components/navbar/navItem";
 import { NavAdd } from "@/components/navbar/navActions";
 import { useCategories, useTasks } from "@/hooks/useData";
+import { NavSettings } from "@/components/navbar/settings/settings";
 
 export default function AppSidebar() {
   const { data: session, status } = useSession();
@@ -24,6 +25,8 @@ export default function AppSidebar() {
         <NavItem category={categories ?? []} tasks={tasks ?? []} />
         <SidebarSeparator />
         <NavAdd />
+        <SidebarSeparator />
+        <NavSettings />
       </SidebarContent>
       <SidebarFooter>
         {status === "authenticated" ? (
