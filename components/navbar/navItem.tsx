@@ -40,21 +40,22 @@ export function NavItem({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {tasks.filter((task) => task.categoryId === item.id).length > 0 ? (
+                {tasks.filter((task) => task.categoryId === item.id).length >
+                0 ? (
                   tasks
                     .filter((task) => task.categoryId === item.id)
                     .map((task) => (
                       <SidebarMenuSubItem key={task.id}>
                         <SidebarMenuSubButton>
-                          <span className="truncate w-4/5">{task.title}</span>
+                          <span className="w-4/5 truncate">{task.title}</span>
                           <span
-                            className={`w-3 h-3 rounded-full ml-auto
-                                ${task.importance === "FAIBLE"
+                            className={`ml-auto h-3 w-3 rounded-full ${
+                              task.importance === "FAIBLE"
                                 ? "bg-faible"
                                 : task.importance === "MOYEN"
                                   ? "bg-moyen"
-                                  : "bg-fort"}
-                              `}
+                                  : "bg-fort"
+                            } `}
                           ></span>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -62,7 +63,9 @@ export function NavItem({
                 ) : (
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton>
-                      <span className="text-muted-foreground text-sm">Aucune tâche</span>
+                      <span className="text-sm text-muted-foreground">
+                        Aucune tâche
+                      </span>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 )}

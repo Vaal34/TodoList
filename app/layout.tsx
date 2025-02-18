@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import "./globals.css";
 import AppSidebar from "@/components/navbar/app-sidebar";
-import { Poppins } from "next/font/google";
-import SessionProviderWrapper from "@/lib/sessionProvider";
-import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/switchTheme";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import WrapperQueryClientProvider from "@/components/wrapperQueryProviders";
+import SessionProviderWrapper from "@/lib/sessionProvider";
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -36,9 +36,9 @@ export default function RootLayout({
             <SessionProviderWrapper>
               <SidebarProvider defaultOpen={true}>
                 <AppSidebar />
-                <main className="w-svw relative">
+                <main className="relative w-svw">
                   <ModeToggle />
-                  <SidebarTrigger className="absolute top-4 left-4" />
+                  <SidebarTrigger className="absolute left-4 top-4" />
                   {children}
                 </main>
               </SidebarProvider>

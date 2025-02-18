@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
+import * as React from "react";
 
 interface SearchbarProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,7 +27,5 @@ export function Searchbar({ className, onChange, value }: SearchbarProps) {
         Rechercher
       </Button>
     </form>
-  )
+  );
 }
-
-

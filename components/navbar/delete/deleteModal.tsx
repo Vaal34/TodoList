@@ -1,17 +1,11 @@
-import { Trash } from "lucide-react";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
 import {
-  DialogTrigger,
   Dialog,
-  DialogTitle,
-  DialogHeader,
   DialogContent,
   DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { AnimatePresence, motion } from "framer-motion";
-import { useMediaQuery } from "@react-hook/media-query";
 import {
   Drawer,
   DrawerContent,
@@ -20,11 +14,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Label } from "@/components/ui/label";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { Switch } from "@/components/ui/switch";
+import { useCategories, useTasks } from "@/hooks/useData";
+import { useMediaQuery } from "@react-hook/media-query";
+import { AnimatePresence, motion } from "framer-motion";
+import { Trash } from "lucide-react";
 import { Session } from "next-auth";
 import { useState } from "react";
 import { DeleteCategory } from "./deleteCategory";
 import { DeleteTasks } from "./deleteTasks";
-import { useCategories, useTasks } from "@/hooks/useData";
 
 interface DeleteItemProps {
   session: Session;

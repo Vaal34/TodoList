@@ -27,7 +27,7 @@ export function LoginForm() {
 
       if (result?.error) {
         setError(
-          "L'adresse email n'est pas valide ou le service est indisponible.",
+          "L'adresse email n'est pas valide ou le service est indisponible."
         );
       } else {
         router.push("/verify-request");

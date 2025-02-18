@@ -1,18 +1,18 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import LoginButton from "@/components/navbar/loginButton";
+import { NavAdd } from "@/components/navbar/navActions";
+import { NavItem } from "@/components/navbar/navItem";
+import { NavUser } from "@/components/navbar/navUser";
+import { NavSettings } from "@/components/navbar/settings/settings";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import LoginButton from "@/components/navbar/loginButton";
-import { NavUser } from "@/components/navbar/navUser";
-import { NavItem } from "@/components/navbar/navItem";
-import { NavAdd } from "@/components/navbar/navActions";
 import { useCategories, useTasks } from "@/hooks/useData";
-import { NavSettings } from "@/components/navbar/settings/settings";
+import { useSession } from "next-auth/react";
 
 export default function AppSidebar() {
   const { data: session, status } = useSession();

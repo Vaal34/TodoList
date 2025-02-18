@@ -1,13 +1,12 @@
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -16,9 +15,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { CirclePlus } from "lucide-react";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -26,11 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { useAddTask, useCategories } from "@/hooks/useData";
+import { cn } from "@/lib/utils";
 import { Category } from "@prisma/client";
 import { useMediaQuery } from "@react-hook/media-query";
+import { CirclePlus } from "lucide-react";
 import { Session } from "next-auth";
-import { cn } from "@/lib/utils";
-import { useAddTask, useCategories } from "@/hooks/useData";
+import { useState } from "react";
 
 const IMPORTANCE_LEVELS = {
   FAIBLE: "FAIBLE",
@@ -53,7 +54,7 @@ const TaskForm = ({
   setSelectedImportance,
   categories,
   isLoading,
-  setErrorForm
+  setErrorForm,
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
@@ -68,8 +69,8 @@ const TaskForm = ({
   setErrorForm: (value: string) => void;
 }) => (
   <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
-    <div className="grid items-start grid-cols-4 gap-4">
-      <Label className="text-right text-sm font-semibold pt-2" htmlFor="title">
+    <div className="grid grid-cols-4 items-start gap-4">
+      <Label className="pt-2 text-right text-sm font-semibold" htmlFor="title">
         Titre
       </Label>
       <div className="col-span-3">
@@ -87,7 +88,7 @@ const TaskForm = ({
         />
       </div>
       <Label
-        className="text-right text-sm font-semibold pt-2"
+        className="pt-2 text-right text-sm font-semibold"
         htmlFor="category"
       >
         Catégorie
@@ -98,7 +99,7 @@ const TaskForm = ({
           onValueChange={setSelectedCategory}
           disabled={isLoading}
         >
-          <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+          <SelectTrigger className="flex w-full items-center justify-between rounded-lg border p-2">
             <SelectValue placeholder="Choisir une catégorie" />
           </SelectTrigger>
           <SelectContent>
@@ -111,7 +112,7 @@ const TaskForm = ({
         </Select>
       </div>
       <Label
-        className="text-right text-sm font-semibold pt-2"
+        className="pt-2 text-right text-sm font-semibold"
         htmlFor="importance"
       >
         Importance
@@ -124,7 +125,7 @@ const TaskForm = ({
           }
           disabled={isLoading}
         >
-          <SelectTrigger className="flex items-center justify-between w-full p-2 border rounded-lg">
+          <SelectTrigger className="flex w-full items-center justify-between rounded-lg border p-2">
             <SelectValue placeholder="Choisir l'importance" />
           </SelectTrigger>
           <SelectContent>
@@ -149,7 +150,7 @@ export function AddTasks({ session }: AddTasksProps) {
   const [task, setTask] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [errorForm, setErrorForm] = useState<string>("")
+  const [errorForm, setErrorForm] = useState<string>("");
   const [selectedImportance, setSelectedImportance] =
     useState<keyof typeof IMPORTANCE_LEVELS>("FAIBLE");
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -180,7 +181,7 @@ export function AddTasks({ session }: AddTasksProps) {
       setSelectedImportance("FAIBLE");
       setOpen(false);
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setErrorForm("Une erreur est survenue lors de l'ajout de la tâche");
     }
   };
@@ -201,11 +202,7 @@ export function AddTasks({ session }: AddTasksProps) {
               Veuillez remplir le formulaire ci-dessous pour ajouter une tâche.
             </DialogDescription>
           </DialogHeader>
-          {errorForm && (
-            <p className="text-red-600">
-              {errorForm}
-            </p>
-          )}
+          {errorForm && <p className="text-red-600">{errorForm}</p>}
           <TaskForm
             handleSubmit={handleSubmit}
             title={task}
@@ -239,9 +236,7 @@ export function AddTasks({ session }: AddTasksProps) {
           </DialogDescription>
         </DrawerHeader>
         {errorForm && (
-          <p className="text-red-600 text-center pb-4">
-            {errorForm}
-          </p>
+          <p className="pb-4 text-center text-red-600">{errorForm}</p>
         )}
         <TaskForm
           className="px-4"

@@ -36,7 +36,7 @@ export function MagicCard({
         mouseY.set(clientY - top);
       }
     },
-    [mouseX, mouseY],
+    [mouseX, mouseY]
   );
 
   const handleMouseOut = useCallback(
@@ -47,7 +47,7 @@ export function MagicCard({
         mouseY.set(-gradientSize);
       }
     },
-    [handleMouseMove, mouseX, gradientSize, mouseY],
+    [handleMouseMove, mouseX, gradientSize, mouseY]
   );
 
   const handleMouseEnter = useCallback(() => {
@@ -79,7 +79,9 @@ export function MagicCard({
       className={cn("group relative flex w-full rounded-md", className)}
     >
       <div className="absolute inset-px z-10 rounded-md bg-background" />
-      <div className="relative z-30 h-full justify-between flex flex-col">{children}</div>
+      <div className="relative z-30 flex h-full flex-col justify-between">
+        {children}
+      </div>
       <motion.div
         className="pointer-events-none absolute inset-px z-10 rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{

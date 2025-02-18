@@ -29,7 +29,7 @@ export function ModeToggle() {
       onClick={toggleTheme}
       aria-label="Changer de thème"
       className={cn(
-        "absolute top-4 h-7 w-7 right-4 p-1 transition focus:outline-none",
+        "absolute right-4 top-4 h-7 w-7 p-1 transition focus:outline-none"
       )}
     >
       <svg

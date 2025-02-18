@@ -16,7 +16,7 @@ interface TaskListProps {
 
 export function TaskList({ tasks, onDelete }: TaskListProps) {
   return (
-    <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(90px,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+    <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-4 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
       {tasks.map((task) => (
         <TaskCard key={task.id} task={task} onDelete={onDelete} />
       ))}

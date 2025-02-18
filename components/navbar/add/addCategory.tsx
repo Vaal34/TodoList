@@ -1,19 +1,10 @@
-import { DialogFooter, DialogHeader } from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
-  DialogTitle,
   DialogDescription,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { FolderPlus } from "lucide-react";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { useState } from "react";
-import { useMediaQuery } from "@react-hook/media-query";
-import EmojiPicker from "emoji-picker-react";
 import {
   Drawer,
   DrawerContent,
@@ -21,9 +12,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { cn } from "@/lib/utils";
-import { Session } from "next-auth";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useAddCategory } from "@/hooks/useData";
+import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@react-hook/media-query";
+import EmojiPicker from "emoji-picker-react";
+import { FolderPlus } from "lucide-react";
+import { Session } from "next-auth";
+import { useState } from "react";
+import { Button } from "../../ui/button";
+import { DialogFooter, DialogHeader } from "../../ui/dialog";
 
 interface AddCategoryProps {
   session: Session;
@@ -34,7 +34,7 @@ export function AddCategory({ session }: AddCategoryProps) {
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [open, setOpen] = useState(false);
-  const [errorForm, setErrorForm] = useState<string>("")
+  const [errorForm, setErrorForm] = useState<string>("");
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const addCategoryMutation = useAddCategory();
@@ -42,7 +42,7 @@ export function AddCategory({ session }: AddCategoryProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (categoryName.trim() === "" || !selectedEmoji) {
-      setErrorForm("Veuillez remplir tous les champs")
+      setErrorForm("Veuillez remplir tous les champs");
       return;
     }
     try {
@@ -77,9 +77,7 @@ export function AddCategory({ session }: AddCategoryProps) {
               Veuillez choisir un nom et une icône pour la catégorie
             </DialogDescription>
           </DialogHeader>
-          {errorForm && (
-          <p className="text-red-600">{errorForm}</p>
-        )}
+          {errorForm && <p className="text-red-600">{errorForm}</p>}
           <CategoryForm
             handleSubmit={handleSubmit}
             categoryName={categoryName}
@@ -112,7 +110,7 @@ export function AddCategory({ session }: AddCategoryProps) {
           </DialogDescription>
         </DrawerHeader>
         {errorForm && (
-          <p className="text-red-600 pb-4 text-center">{errorForm}</p>
+          <p className="pb-4 text-center text-red-600">{errorForm}</p>
         )}
         <CategoryForm
           className="px-4"
@@ -141,7 +139,7 @@ function CategoryForm({
   showEmojiPicker,
   setShowEmojiPicker,
   isLoading,
-  setErrorForm
+  setErrorForm,
 }: {
   className?: string;
   handleSubmit: (e: React.FormEvent) => void;
@@ -156,12 +154,12 @@ function CategoryForm({
 }) {
   return (
     <form onSubmit={handleSubmit} className={cn("grid gap-4", className)}>
-      <div className="grid items-center grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 items-center gap-4">
         <Label className="text-right text-sm font-semibold">Nom</Label>
         <Input
           value={categoryName}
           onChange={(e) => {
-            setCategoryName(e.target.value)
+            setCategoryName(e.target.value);
             if (e.target.value.trim() != "") {
               setErrorForm("");
             }
@@ -179,7 +177,7 @@ function CategoryForm({
             {selectedEmoji || "Choisir un emoji"}
           </Button>
           {showEmojiPicker && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
               <EmojiPicker
                 onEmojiClick={(emoji) => {
                   setSelectedEmoji(emoji.emoji);

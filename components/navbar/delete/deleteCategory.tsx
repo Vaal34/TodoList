@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { SquareX } from "lucide-react";
-import { Category } from "@prisma/client";
 import { useDeleteCategory } from "@/hooks/useData";
+import { Category } from "@prisma/client";
+import { SquareX } from "lucide-react";
 import { useState } from "react";
 
 export function DeleteCategory({ categories }: { categories: Category[] }) {
@@ -26,12 +26,12 @@ export function DeleteCategory({ categories }: { categories: Category[] }) {
           onClick={() => handleDelete(categorie.id)}
           key={categorie.id}
           disabled={deletingId === categorie.id}
-          className="truncate flex items-center justify-between hover:bg-red-500 transition-all duration-400 hover:animate-tilt-shake"
+          className="duration-400 flex items-center justify-between truncate transition-all hover:animate-tilt-shake hover:bg-red-500"
         >
-          <span className="truncate overflow-auto">
+          <span className="overflow-auto truncate">
             {categorie.emoji + categorie.name}
           </span>
-          <SquareX 
+          <SquareX
             className={deletingId === categorie.id ? "animate-spin" : ""}
           />
         </Button>

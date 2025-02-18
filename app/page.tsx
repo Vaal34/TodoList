@@ -1,10 +1,16 @@
 "use client";
 
+import { TaskList } from "@/components/homeTasks/taskList";
 import { Searchbar } from "@/components/ui/searchbar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCategories, useDeleteTask, useTasks } from "@/hooks/useData";
 import { useSession } from "next-auth/react";
-import { TaskList } from "@/components/homeTasks/taskList";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 
 export default function Home() {
@@ -13,7 +19,7 @@ export default function Home() {
   const { data: taches } = useTasks(session?.user?.id ?? "");
   const deleteTaskMutation = useDeleteTask();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [inputText, setInputText] = useState<string>("")
+  const [inputText, setInputText] = useState<string>("");
 
   const handleDelete = async (taskId: string) => {
     try {
@@ -23,35 +29,39 @@ export default function Home() {
     }
   };
 
-  const tasksWithCategories = taches?.map(tache => {
-    const category = categories?.find(cat => cat.id === tache.categoryId);
+  const tasksWithCategories = taches?.map((tache) => {
+    const category = categories?.find((cat) => cat.id === tache.categoryId);
     return {
       ...tache,
-      categoryName: category?.name ?? '',
-      categoryEmoji: category?.emoji ?? ''
+      categoryName: category?.name ?? "",
+      categoryEmoji: category?.emoji ?? "",
     };
   });
 
-  const filteredTasks = selectedCategory === "all" || !selectedCategory
-    ? tasksWithCategories
-    : tasksWithCategories?.filter(task => task.categoryId === selectedCategory);
+  const filteredTasks =
+    selectedCategory === "all" || !selectedCategory
+      ? tasksWithCategories
+      : tasksWithCategories?.filter(
+          (task) => task.categoryId === selectedCategory
+        );
 
-  const searchTasks = filteredTasks?.filter(task =>
-    task.title.toLowerCase().startsWith((inputText).toLowerCase())
+  const searchTasks = filteredTasks?.filter((task) =>
+    task.title.toLowerCase().startsWith(inputText.toLowerCase())
   );
 
-
   return (
-    <div className="size-full flex flex-col items-center p-11 md:p-16 gap-4 transition-all">
-      <div className="flex gap-2 w-full flex-row">
+    <div className="flex size-full flex-col items-center gap-4 p-11 transition-all md:p-16">
+      <div className="flex w-full flex-row gap-2">
         <Searchbar
-          value={inputText} onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
-          className="md:w-3/4 w-1/2" />
+          value={inputText}
+          onChange={(e) => setInputText((e.target as HTMLInputElement).value)}
+          className="w-1/2 md:w-3/4"
+        />
         <Select onValueChange={setSelectedCategory}>
-          <SelectTrigger className="text-xs md:text-sm truncate w-1/2 md:1/4 flex items-center justify-between p-2 border rounded-lg">
+          <SelectTrigger className="md:1/4 flex w-1/2 items-center justify-between truncate rounded-lg border p-2 text-xs md:text-sm">
             <SelectValue placeholder="Choisir une catégorie" />
           </SelectTrigger>
-          <SelectContent >
+          <SelectContent>
             <SelectItem value="all">Toutes les tâches</SelectItem>
             {categories?.map((category) => (
               <SelectItem key={category.id} value={category.id}>

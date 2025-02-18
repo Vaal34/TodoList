@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { SquareX } from "lucide-react";
-import { Category, Task } from "@prisma/client";
 import {
-  SelectGroup,
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 import { useDeleteTask } from "@/hooks/useData";
+import { Category, Task } from "@prisma/client";
+import { SquareX } from "lucide-react";
+import { useState } from "react";
 
 export function DeleteTasks({
   taches,
@@ -39,7 +39,7 @@ export function DeleteTasks({
   };
 
   const filteredTasks = taches.filter(
-    (tache) => tache.categoryId === selectedCategory,
+    (tache) => tache.categoryId === selectedCategory
   );
 
   return (
@@ -66,7 +66,7 @@ export function DeleteTasks({
               key={tache.id}
               onClick={() => handleDelete(tache.id)}
               disabled={deletingId === tache.id}
-              className="w-full overflow-hidden flex items-center justify-between gap-2 hover:bg-red-500 transition-all duration-400 hover:animate-tilt-shake"
+              className="duration-400 flex w-full items-center justify-between gap-2 overflow-hidden transition-all hover:animate-tilt-shake hover:bg-red-500"
             >
               <span className="truncate">{tache.title}</span>
               <SquareX

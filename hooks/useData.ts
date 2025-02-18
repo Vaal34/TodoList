@@ -1,12 +1,12 @@
 // hooks/useTasks.ts
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTask, deleteTask, addTask } from "@/lib/bdd_orm/tasksService";
 import {
-  getCategory,
-  deleteCategory,
   addCategory,
+  deleteCategory,
+  getCategory,
 } from "@/lib/bdd_orm/categoryServices";
-import { Category, Task } from "@prisma/client";
+import { addTask, deleteTask, getTask } from "@/lib/bdd_orm/tasksService";
+import { Task } from "@prisma/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useTasks(userId: string) {
   return useQuery({
@@ -33,7 +33,7 @@ export function useDeleteTask() {
       // Mise à jour optimiste du cache
       queryClient.setQueryData<Task[]>(
         ["tasks"],
-        (oldTasks) => oldTasks?.filter((task) => task.id !== taskId) ?? [],
+        (oldTasks) => oldTasks?.filter((task) => task.id !== taskId) ?? []
       );
       // Invalider pour recharger les données
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

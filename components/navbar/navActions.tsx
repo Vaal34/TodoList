@@ -1,7 +1,7 @@
-import { useSession } from "next-auth/react";
-import { SidebarGroup, SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
 import { AddCategory } from "@/components/navbar/add/addCategory";
 import { AddTasks } from "@/components/navbar/add/addTasks";
+import { useSession } from "next-auth/react";
+import { SidebarGroup, SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
 import { DeleteItem } from "./delete/deleteModal";
 
 export function NavAdd() {

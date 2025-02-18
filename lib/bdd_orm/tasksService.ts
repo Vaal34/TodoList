@@ -6,7 +6,7 @@ export async function addTask(
   title: string,
   userId: string,
   category: string,
-  importance: string,
+  importance: string
 ) {
   await prisma.task.create({
     data: {
