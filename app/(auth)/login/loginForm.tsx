@@ -56,42 +56,6 @@ export function LoginForm() {
 
   return (
     <div className="mt-8 space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="exemple@email.com"
-            required
-            className="mt-1"
-          />
-        </div>
-
-        {error && (
-          <p className="text-sm text-red-500" role="alert">
-            {error}
-          </p>
-        )}
-
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Chargement..." : "Se connecter avec Email"}
-        </Button>
-      </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Ou continuer avec
-          </span>
-        </div>
-      </div>
-
       <Button
         type="button"
         variant="outline"
