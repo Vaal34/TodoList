@@ -8,20 +8,19 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String  
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -38,32 +37,32 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  email         String?     @unique
-  emailVerified DateTime?   @map("email_verified")
+  id            String     @id @default(cuid())
+  email         String?    @unique
+  emailVerified DateTime?  @map("email_verified")
   name          String?
   image         String?
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime   @default(now())
   accounts      Account[]
+  categories    Category[]
   sessions      Session[]
-  tasks         Task[]      // Relation avec les tâches
-  categories    Category[]  // Relation avec les catégories
+  tasks         Task[]
 
   @@map("users")
 }
 
 model Task {
-  id          String     @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
-  importance  String
-  isCompleted Boolean    @default(false)
+  isCompleted Boolean   @default(false)
   dueDate     DateTime?
-  userId      String     // Clé étrangère vers User
-  categoryId  String?    // Clé étrangère vers Category
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  userId      String
+  categoryId  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  importance  String
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tasks")
 }
@@ -71,14 +70,14 @@ model Task {
 model Category {
   id        String   @id @default(cuid())
   name      String
-  userId    String   // Clé étrangère vers User
-  emoji     String
-  tasks     Task[]   // Relation avec les tâches
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
+  emoji     String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks     Task[]
 
-  @@unique([name, userId]) // Permet d'avoir un nom unique par utilisateur
+  @@unique([name, userId])
   @@map("categories")
 }
 
