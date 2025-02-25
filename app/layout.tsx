@@ -1,7 +1,7 @@
-import AppSidebar from "@/components/navbar/app-sidebar";
+import ResponsiveLayout from "@/components/ResponsiveLayout";
 import { ModeToggle } from "@/components/switchTheme";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import WrapperQueryClientProvider from "@/components/wrapperQueryProviders";
 import SessionProviderWrapper from "@/lib/sessionProvider";
 import type { Metadata } from "next";
@@ -35,12 +35,10 @@ export default function RootLayout({
           >
             <SessionProviderWrapper>
               <SidebarProvider defaultOpen={true}>
-                <AppSidebar />
-                <main className="relative w-svw">
+                <ResponsiveLayout>
                   <ModeToggle />
-                  <SidebarTrigger className="absolute left-4 top-4" />
                   {children}
-                </main>
+                </ResponsiveLayout>
               </SidebarProvider>
             </SessionProviderWrapper>
           </ThemeProvider>

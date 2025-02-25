@@ -20,7 +20,7 @@ export const authConfig: NextAuthOptions = {
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
-    })
+    }),
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
